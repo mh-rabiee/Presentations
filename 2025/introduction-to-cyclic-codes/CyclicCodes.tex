@@ -1,0 +1,486 @@
+\documentclass[aspectratio=169,xcolor=dvipsnames]{beamer}
+\usetheme{SimpleDarkBlue}
+
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{amsthm}
+
+\title{Introduction to Cyclic Codes}
+
+\author{
+	Mohammad Hosein Rabiee
+	\and
+	Amir Hosein Karimzadgan \\
+}
+
+\institute
+{
+	Department of Computer Science and Statistics \\
+	Faculty of Mathematics \\
+	K. N. Toosi University of Technology
+}
+\date{}
+
+\begin{document}
+	
+	\begin{frame}
+		\titlepage
+	\end{frame}
+	
+	\begin{frame}{Cyclic Codes}
+		
+		\begin{itemize}
+			\item \textcolor{blue}{Cyclic codes} are an important class of linear error-correcting codes
+			with strong algebraic structure and efficient implementation via \textcolor{blue}{shift registers}.
+		\end{itemize}
+		
+		\vspace{0.6em}
+		
+		\begin{block}{Definition (Cyclic Code)}
+			A code $C$ of length $n$ over $\mathbb{F}_q$ is \alert{cyclic} if:
+			\begin{enumerate}
+				\item $C$ is a \textcolor{blue}{linear code}
+				\item For every codeword $(a_0,a_1,\dots,a_{n-1}) \in C$,  
+				its cyclic shift $(a_{n-1},a_0,\dots,a_{n-2})$ is also in $C$
+			\end{enumerate}
+			
+		\end{block}
+		\begin{itemize}
+			\item When studying cyclic codes, we label coordinates as
+			$0,1,\ldots,n-1$ and associate each vector
+			\[
+			(a_0,a_1,\ldots,a_{n-1}) \in V(n,q)
+			\]
+			with the polynomial
+			\[
+			a_0 + a_1 x + \cdots + a_{n-1} x^{n-1}.
+			\]
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Cyclic Codes: Examples}
+		
+		\begin{alertblock}{Examples}
+			\begin{itemize}
+				\item The binary code
+				\[
+				\{000,\;101,\;011,\;110\}
+				\]
+				is \alert{cyclic}, since every cyclic shift of a codeword is again in the code.
+				
+				\vspace{0.4em}
+				
+				\item  The Hamming code $\text{Ham}(3,2)$ is \alert{cyclic}.  
+				Each codeword is obtained as a cyclic shift of its predecessor.
+				
+				\vspace{0.4em}
+				
+				\item The binary linear code
+				\[
+				\{0000,\;1001,\;0110,\;1111\}
+				\]
+				is \alert{not cyclic}.  
+				However, by interchanging the third and fourth coordinates, it becomes the cyclic code
+				\[
+				\{0000,\;1010,\;0101,\;1111\}.
+				\]
+				
+			\end{itemize}
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Polynomials over Finite Fields}
+		
+		\begin{block}{Polynomials over $\mathbb{F}_q$}
+			Let $\mathbb{F}_q$ (or simply $\mathbb{F}$) denote a finite field.
+			\begin{itemize}
+				\item $\mathbb{F}[x]$ denotes the set of polynomials in $x$ with coefficients in $\mathbb{F}$.
+				\item For
+				\[
+				f(x) = f_0 + f_1 x + \cdots + f_m x^m, \quad f_m \neq 0,
+				\]
+				the integer $m$ is called the \alert{degree} of $f(x)$, denoted $\deg f(x)$.
+				\item $f_m$ is the \alert{leading coefficient}.
+				\item A polynomial is called \alert{monic} if its leading coefficient is $1$.
+			\end{itemize}
+		\end{block}
+		
+		\begin{itemize}
+			\item Polynomials in $\mathbb{F}[x]$ can be added, subtracted, and multiplied.
+			\item $\mathbb{F}[x]$ is a \textcolor{blue}{ring} (but not a field), since polynomials of degree $>0$ have no multiplicative inverses.
+			\item For $f(x), g(x) \in \mathbb{F}[x]$,
+			\[
+			\deg(f(x)g(x)) = \deg f(x) + \deg g(x).
+			\]
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Division Algorithm for Polynomials}
+		
+		\begin{block}{Division Algorithm}
+			For any $a(x), b(x) \in \mathbb{F}[x]$ with $b(x) \neq 0$, there exist
+			unique polynomials $q(x)$ and $r(x)$ such that
+			\[
+			a(x) = q(x)b(x) + r(x),
+			\quad \deg r(x) < \deg b(x).
+			\]
+			This is analogous to the division algorithm in $\mathbb{Z}$.
+		\end{block}
+		
+		\vspace{0.4em}
+		
+		\begin{alertblock}{Example}
+			In $\mathbb{F}[x]$, divide $x^3 + x + 1$ by $x^2 + x + 1$:
+			\[
+			x^3 + x + 1 = (x + 1)(x^2 + x + 1) + x.
+			\]
+			Here, $q(x) = x + 1$ and $r(x) = x$.
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Polynomials Modulo $f(x)$}
+		
+		\begin{block}{Congruence Modulo a Polynomial}
+			Let $f(x) \in \mathbb{F}[x]$ be fixed.  
+			Two polynomials $g(x), h(x) \in \mathbb{F}[x]$ are said to be
+			\alert{congruent modulo $f(x)$}, written
+			\[
+			g(x) \equiv h(x) \pmod{f(x)},
+			\]
+			if $g(x) - h(x)$ is divisible by $f(x)$.
+		\end{block}
+		
+		\vspace{0.4em}
+		
+		\begin{block}{The Ring $\mathbb{F}[x]/(f(x))$}
+			\begin{itemize}
+				\item By the division algorithm, every $a(x) \in \mathbb{F}[x]$ is congruent
+				modulo $f(x)$ to a unique polynomial $r(x)$ with
+				\[
+				\deg r(x) < \deg f(x).
+				\]
+				\item $\mathbb{F}[x]/(f(x))$ denotes the set of all such polynomials.
+				\item Addition is ordinary polynomial addition.
+				\item Multiplication is performed modulo $f(x)$.
+			\end{itemize}
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}{Example: $\mathbb{F}_{2}[x]/(x^2 + x + 1)$}
+		\begin{alertblock}{}
+			In $\mathbb{F}_{2}[x]/(x^2 + x + 1)$,
+			\[
+			(x+1)^2 = x^2 + 2x + 1 \equiv x \pmod{x^2 + x + 1}.
+			\]
+		\end{alertblock}
+		\begin{alertblock}{}
+			The elements of the ring are
+			\[
+			\{\,0,\;1,\;x,\;1+x\,\}.
+			\]
+			Every non-zero element has a multiplicative inverse, hence
+			$\mathbb{F}_{2}[x]/(x^2 + x + 1)$ is a \alert{field} of order $4$.
+			
+			\vspace{0.6em}
+			
+			\begin{columns}[c]
+				\column{0.48\textwidth}
+				\centering
+				\textbf{Addition ($+$)}
+				\[
+				\begin{array}{c|cccc}
+					+ & 0 & 1 & x & 1+x \\ \hline
+					0 & 0 & 1 & x & 1+x \\
+					1 & 1 & 0 & 1+x & x \\
+					x & x & 1+x & 0 & 1 \\
+					1+x & 1+x & x & 1 & 0
+				\end{array}
+				\]
+				
+				\column{0.48\textwidth}
+				\centering
+				\textbf{Multiplication ($\cdot$)}
+				\[
+				\begin{array}{c|cccc}
+					\cdot & 0 & 1 & x & 1+x \\ \hline
+					0 & 0 & 0 & 0 & 0 \\
+					1 & 0 & 1 & x & 1+x \\
+					x & 0 & x & 1+x & 1 \\
+					1+x & 0 & 1+x & 1 & x
+				\end{array}
+				\]
+			\end{columns}
+			
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Irreducible Polynomials}
+		
+		\begin{alertblock}{When is $\mathbb{F}[x]/(f(x))$ a Field?}
+			It is \alert{not} true that $\mathbb{F}[x]/(f(x))$ is a field for every
+			polynomial $f(x)$.
+			
+			\begin{itemize}
+				\item For example, $\mathbb{F}[x]/(x^2 + 1)$ is \alert{not} a field.
+				\item The key property that makes $\mathbb{F}[x]/(f(x))$ a field
+				is that $f(x)$ is \alert{irreducible}.
+			\end{itemize}
+		\end{alertblock}
+		
+		\begin{block}{Definition (Reducible / Irreducible)}
+			A polynomial $f(x) \in \mathbb{F}[x]$ is called \alert{reducible} if
+			\[
+			f(x) = a(x)b(x),
+			\]
+			where $a(x), b(x) \in \mathbb{F}[x]$ and
+			\[
+			\deg a(x) < \deg f(x), \quad \deg b(x) < \deg f(x).
+			\]
+			If $f(x)$ is not reducible, it is called \alert{irreducible}.
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}{Factorization in $\mathbb{F}[x]$}
+		
+		\vspace{0.6em}
+		
+		\begin{block}{Lemma}
+			Let $f(x) \in \mathbb{F}[x]$.
+			\begin{enumerate}
+				\item $f(x)$ has a linear factor $(x-a)$ \alert{if and only if}
+				\[
+				f(a) = 0.
+				\]
+				
+				\item If $\deg f(x) = 2$ or $3$, then $f(x)$ is \alert{irreducible}
+				if and only if
+				\[
+				f(a) \neq 0 \quad \text{for all } a \in \mathbb{F}.
+				\]
+				
+				\item Over any field,
+				\[
+				x^n - 1 = (x - 1)\left(x^{n-1} + x^{n-2} + \cdots + x + 1\right),
+				\]
+				where the second factor may be further reducible.
+			\end{enumerate}
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}{Factorization in $\mathbb{F}[x]$ (Continued)}
+		
+		\begin{alertblock}{Proof}
+			Let $f(x) \in \mathbb{F}[x]$.
+			\begin{enumerate}
+				\item[(i)] If $f(x) = (x-a)g(x)$, then clearly $f(a) = 0$.
+				Conversely, if $f(a) = 0$, then by the division algorithm:
+				\[
+				f(x) = q(x)(x-a) + r(x), \quad \deg r(x) < 1.
+				\]
+				Hence $r(x)$ is a constant, and since $0 = f(a) = r(a)$, we have $r(x) = 0$.
+				
+				\item[(ii)] A polynomial of degree 2 or 3 is reducible \emph{iff} it has at least one linear factor.
+				By (i), the result follows immediately.
+				
+				\item[(iii)] By (i), $x-1$ is a factor of $x^n - 1$.
+				Performing long division of $x^n - 1$ by $x-1$ gives the other factor:
+				\[
+				x^n - 1 = (x-1)(x^{n-1} + x^{n-2} + \cdots + x + 1).
+				\]
+			\end{enumerate}
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Finite Fields $\mathrm{GF}(p^h),\ h>1$}
+		
+		\begin{alertblock}{Key Property}
+			The property of a polynomial being irreducible in $\mathbb{F}[x]$ corresponds exactly to the property of a number being prime in $\mathbb{Z}$.
+		\end{alertblock}
+		
+		\begin{block}{Theorem}
+			The ring $\mathbb{F}[x]/f(x)$ is a field \emph{if and only if} $f(x)$ is irreducible in $\mathbb{F}[x]$.
+		\end{block}
+		
+		\textbf{Remarks:}
+		\begin{itemize}
+			\item Proof is exactly in same the way of proving $Z_m$ is a field if and only if $m$ is prime.
+			\item For any prime $p$ and any positive integer $h$, there exists an irreducible polynomial over $\mathrm{GF}(p)$ of degree $h$.
+			\item By Theorem, this guarantees the existence of fields $\mathrm{GF}(p^h)$ for all integers $h \ge 1$.
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Back to Cyclic Codes}
+		
+		\begin{itemize}
+			\item We now return to \alert{cyclic codes}, equipped with polynomial tools.
+			\item The key idea is to represent vectors by polynomials and cyclic shifts by
+			multiplication by $x$.
+		\end{itemize}
+		
+		\begin{block}{Vector–Polynomial Correspondence}
+			A vector $(a_0,a_1,\dots,a_{n-1}) \in \mathbb{F}_q^n$ corresponds to
+			\[
+			a(x) = a_0 + a_1 x + \cdots + a_{n-1} x^{n-1}.
+			\]
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}{The Ring $R_n = \mathbb{F}_q[x]/(x^n - 1)$}
+		
+		\begin{itemize}
+			\item In $R_n$, multiplication is performed modulo $x^n - 1$.
+			\item Since $x^n \equiv 1 \pmod{x^n - 1}$, multiplication by $x$
+			causes coefficients to wrap around.
+		\end{itemize}
+		
+		\begin{alertblock}{Key Observation}
+			Multiplication by $x$ in $R_n$ corresponds exactly to a cyclic shift of a vector.
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Algebraic Characterization of Cyclic Codes}
+		
+		\begin{theorem}
+			A subset $C \subseteq R_n$ is a cyclic code if and only if:
+			\begin{enumerate}
+				\item $C$ is closed under addition;
+				\item for all $a(x) \in C$ and $r(x) \in R_n$, we have $r(x)a(x) \in C$.
+			\end{enumerate}
+		\end{theorem}
+		
+		\begin{block}{Interpretation}
+			Cyclic codes are exactly the \alert{ideals} of the ring $R_n$.
+		\end{block}
+		
+	\end{frame}
+	
+	\begin{frame}{Why This Works}
+		
+		\begin{itemize}
+			\item Cyclicity means closure under multiplication by $x$.
+			\item Closure under multiplication by $x$ implies closure under any
+			polynomial in $R_n$.
+			\item Linearity ensures closure under addition.
+		\end{itemize}
+		
+		\begin{alertblock}{Takeaway}
+			Cyclic structure becomes simple algebra.
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Generator Polynomial}
+		
+		\begin{theorem}
+			Let $C$ be a nonzero cyclic code in $R_n$. Then:
+			\begin{enumerate}
+				\item There exists a unique \alert{monic} polynomial $g(x)$ of smallest degree in $C$.
+				\item $C = (g(x)) = \{a(x)g(x) \mid a(x) \in R_n\}$.
+				\item $g(x)$ divides $x^n - 1$.
+			\end{enumerate}
+		\end{theorem}
+		
+	\end{frame}
+	
+	\begin{frame}{Properties of the Generator Polynomial}
+		
+		\begin{itemize}
+			\item The generator polynomial completely determines the code.
+			\item If $\deg g(x) = r$, then
+			\[
+			\dim(C) = n - r.
+			\]
+			\item Every cyclic code corresponds to a monic divisor of $x^n - 1$.
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Example: Binary Cyclic Codes of Length 3}
+		
+		Over $\mathbb{F}_2$,
+		\[
+		x^3 - 1 = (x + 1)(x^2 + x + 1),
+		\]
+		where both factors are irreducible.
+		
+		\begin{itemize}
+			\item Each monic divisor gives a cyclic code.
+			\item This produces all binary cyclic codes of length $3$.
+		\end{itemize}
+		
+	\end{frame}
+	
+	\begin{frame}{Check Polynomial}
+		
+		Let $g(x)$ be the generator polynomial of a cyclic code.
+		
+		\begin{block}{Definition}
+			The \alert{check polynomial} $h(x)$ is defined by
+			\[
+			x^n - 1 = g(x)h(x).
+			\]
+		\end{block}
+		
+		\begin{theorem}
+			A polynomial $c(x) \in R_n$ is a codeword if and only if
+			\[
+			c(x)h(x) \equiv 0 \pmod{x^n - 1}.
+			\]
+		\end{theorem}
+		
+	\end{frame}
+	
+	\begin{frame}{Parity-Check Matrix}
+		
+		\begin{itemize}
+			\item The check polynomial encodes all parity conditions.
+			\item Writing the coefficients of
+			\[
+			h(x),\; xh(x),\; x^2h(x), \dots
+			\]
+			yields the rows of a parity-check matrix.
+		\end{itemize}
+		
+		\begin{alertblock}{Summary}
+			$g(x)$ generates the code; $h(x)$ checks membership.
+		\end{alertblock}
+		
+	\end{frame}
+	
+	\begin{frame}{Final Takeaway}
+		
+		\begin{itemize}
+			\item Cyclic codes turn coding problems into algebraic ones.
+			\item Their structure is governed by the factorization of $x^n - 1$.
+			\item Generator and check polynomials enable efficient encoding and decoding.
+		\end{itemize}
+		
+		\begin{center}
+			\alert{Cyclic codes = structure + efficiency}
+		\end{center}
+		
+	\end{frame}
+	
+	\begin{frame}
+		\Huge{\centerline{\textbf{Thank you!}}}
+	\end{frame}
+	
+\end{document}

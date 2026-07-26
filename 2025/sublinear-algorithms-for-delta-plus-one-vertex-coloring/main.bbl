@@ -1,0 +1,14 @@
+\begin{thebibliography}{}
+
+\bibitem[Feige and Kilian, 1998]{p2}
+Feige, U. and Kilian, J. (1998).
+\newblock Zero knowledge and the chromatic number.
+\newblock {\em Journal of Computer and System Sciences}, 57(2):187--199.
+
+\bibitem[Zuckerman, 2007]{p1}
+Zuckerman, D. (2007).
+\newblock Linear degree extractors and the inapproximability of max clique and
+  chromatic number.
+\newblock {\em Theory of Computing}, 3(6):103--128.
+
+\end{thebibliography}

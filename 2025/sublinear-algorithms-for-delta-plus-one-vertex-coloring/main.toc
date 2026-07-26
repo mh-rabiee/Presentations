@@ -1,0 +1,8 @@
+\beamer@sectionintoc {1}{Graph Coloring}{3}{0}{1}
+\beamer@sectionintoc {2}{Sublinear Algorithms}{6}{0}{2}
+\beamer@sectionintoc {3}{Main Results}{9}{0}{3}
+\beamer@sectionintoc {4}{Palette Sparsification Theorem}{16}{0}{4}
+\beamer@sectionintoc {5}{A One-Pass $\tilde {O}(n)$ Space Streaming Algorithm}{23}{0}{5}
+\beamer@sectionintoc {6}{Maintaining Algorithm For Dynamic Streams}{25}{0}{6}
+\beamer@sectionintoc {7}{Proof Idea of the Palette‑Sparsification Theorem}{29}{0}{7}
+\beamer@sectionintoc {8}{Related Works}{49}{0}{8}
